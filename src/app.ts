@@ -4,6 +4,7 @@ import os from 'os'; // Node.js module for operating system-related utility meth
 import bodyParser from 'body-parser';
 import { router } from './routes/ItemRoutes';
 import { connectDB } from './db/connection';
+import winston from 'winston';
 
 const numCPUs = os.cpus().length;
 
@@ -21,6 +22,20 @@ if (cluster.isPrimary) {
 } else {
   const app = express();
   const PORT = process.env.PORT || 3000;
+
+  // Logging setup
+  const logger = winston.createLogger({
+    transports: [
+      new winston.transports.Console(),
+      new winston.transports.File({ filename: 'error.log', level: 'error' }),
+      new winston.transports.File({ filename: 'combined.log' })
+    ]
+  });
+
+  app.use((req, res, next) => {
+    logger.info(`${req.method} ${req.originalUrl} ${res.statusCode}`);
+    next();
+  });
 
   app.use(bodyParser.json());
   app.use('/api', router);
