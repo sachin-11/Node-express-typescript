@@ -1,1 +1,3 @@
 {"level":"info","message":"GET /api/items 200"}
+{"level":"info","message":"POST /api/items 200"}
+{"level":"info","message":"POST /api/items 200"}

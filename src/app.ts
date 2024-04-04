@@ -5,6 +5,8 @@ import bodyParser from 'body-parser';
 import { router } from './routes/ItemRoutes';
 import { connectDB } from './db/connection';
 import winston from 'winston';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const numCPUs = os.cpus().length;
 

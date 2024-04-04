@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { ItemModel, Item } from '../models/ItemModel';
 import { sendSuccessResponse, sendErrorResponse } from '../utils/common';
+import { itemSchema } from '../controllers/validation/itemValidation';
 
 
 export const getAllItems = async (req: Request, res: Response) => {
@@ -25,6 +26,13 @@ export const getAllItems = async (req: Request, res: Response) => {
   };
 
   export const createItem = async (req: Request, res: Response) => {
+
+    // Validate request body against Joi schema
+    const { error } = itemSchema.validate(req.body);
+    if (error) {
+      return res.status(400).json({ message: error.details[0].message });
+    }
+
     const newItem: { name: string, description: string } = {
       name: req.body.name,
       description: req.body.description,
@@ -40,6 +48,13 @@ export const getAllItems = async (req: Request, res: Response) => {
 
   export const updateItem = async (req: Request, res: Response) => {
     try {
+
+       // Validate request body against Joi schema
+      const { error } = itemSchema.validate(req.body);
+      if (error) {
+        return res.status(400).json({ message: error.details[0].message });
+      }
+
       const updatedItem = await ItemModel.findByIdAndUpdate(
         req.params.id,
         req.body,
